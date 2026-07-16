@@ -339,41 +339,42 @@ def handle_push(before, after, systems_token, libraries_token):
     clone_url = f"https://x-access-token:{token}@github.com/{repo_name}.git"
 
     original_cwd = os.getcwd()
-    with tempfile.TemporaryDirectory() as tmp:
-        run(["git", "clone", "--depth", "1", clone_url, tmp])
-        os.chdir(tmp)  # Change working directory to the cloned repo
+    
+    # with tempfile.TemporaryDirectory() as tmp:
+    #     run(["git", "clone", "--depth", "1", clone_url, tmp])
+    #     os.chdir(tmp)  # Change working directory to the cloned repo
 
-        # Verify that the file exists before accessing
-        for f in config["files"]:
-            if not os.path.exists(f):
-                print(f"[ERROR] File not found: {f}")
-                os.chdir(original_cwd)
-                return
+    #     # Verify that the file exists before accessing
+    #     for f in config["files"]:
+    #         if not os.path.exists(f):
+    #             print(f"[ERROR] File not found: {f}")
+    #             os.chdir(original_cwd)
+    #             return
 
-        run(["git", "checkout", "-b", branch])
+    #     run(["git", "checkout", "-b", branch])
 
-        updater = (
-            update_ci_env_file
-            if config.get("updater") == "ci-env"
-            else update_ref_in_file
-        )
-        for f in config["files"]:
-            updater(f, after)
+    #     updater = (
+    #         update_ci_env_file
+    #         if config.get("updater") == "ci-env"
+    #         else update_ref_in_file
+    #     )
+    #     for f in config["files"]:
+    #         updater(f, after)
 
-        run(["git", "add"] + config["files"])
-        run(["git", "commit", "-m", f"Update TheRock ref to {after[:7]}"])
-        run(["git", "push", "origin", branch])
-        gh_api(
-            token,
-            f"repos/{repo_name}/pulls",
-            method="POST",
-            data={
-                "title": f"Update TheRock reference to ({after[:7]})",
-                "head": branch,
-                "base": "develop",
-                "body": f"Updated TheRock ref to `{after[:7]}` due to submodule bump",
-            },
-        )
+    #     run(["git", "add"] + config["files"])
+    #     run(["git", "commit", "-m", f"Update TheRock ref to {after[:7]}"])
+    #     run(["git", "push", "origin", branch])
+    #     gh_api(
+    #         token,
+    #         f"repos/{repo_name}/pulls",
+    #         method="POST",
+    #         data={
+    #             "title": f"Update TheRock reference to ({after[:7]})",
+    #             "head": branch,
+    #             "base": "develop",
+    #             "body": f"Updated TheRock ref to `{after[:7]}` due to submodule bump",
+    #         },
+    #     )
 
     os.chdir(original_cwd)
 
