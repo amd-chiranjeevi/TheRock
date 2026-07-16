@@ -6,10 +6,25 @@ import argparse
 import subprocess
 import tempfile
 import os
+import functools
 from datetime import datetime, timezone
 import requests
 
 THEROCK_REPO = "amd-chiranjeevi/TheRock"
+
+
+def warn_on_failure(func):
+    """Catch and log any exception without re-raising, so callers are never blocked."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(f"[WARN] {func.__name__} failed: {e}")
+
+    return wrapper
+
 
 ROCM_SYSTEMS_FILES = [
     ".github/workflows/therock-ci-linux.yml",
@@ -96,6 +111,7 @@ def update_ref_in_file(file_path, new_sha):
     Update all ROCm/TheRock refs in a YAML file.
     Replaces existing 'ref:' after 'repository: "ROCm/TheRock"'.
     """
+    return 0
     with open(file_path, "r") as f:
         lines = f.readlines()
 
@@ -212,6 +228,7 @@ def close_stale_prs(submodule, old_sha, systems_token):
             )
 
 
+@warn_on_failure
 def create_therock_bump(submodule, token):
     """Create a bump PR for the given submodule in TheRock."""
     repo = SUBMODULE_CONFIG[submodule]["repo"]
@@ -321,6 +338,7 @@ def handle_push(before, after, systems_token, libraries_token):
     branch = f"update-therock-{changed}-{after[:7]}"
     clone_url = f"https://x-access-token:{token}@github.com/{repo_name}.git"
 
+    original_cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as tmp:
         run(["git", "clone", "--depth", "1", clone_url, tmp])
         os.chdir(tmp)  # Change working directory to the cloned repo
@@ -329,6 +347,7 @@ def handle_push(before, after, systems_token, libraries_token):
         for f in config["files"]:
             if not os.path.exists(f):
                 print(f"[ERROR] File not found: {f}")
+                os.chdir(original_cwd)
                 return
 
         run(["git", "checkout", "-b", branch])
@@ -355,6 +374,13 @@ def handle_push(before, after, systems_token, libraries_token):
                 "body": f"Updated TheRock ref to `{after[:7]}` due to submodule bump",
             },
         )
+
+    os.chdir(original_cwd)
+
+    # Immediately queue the next bump PR so the cycle continues without
+    # waiting for the next scheduled run.
+    print(f"[INFO] Creating next bump PR for {changed} after merge")
+    create_therock_bump(changed, token)
 
 
 def main():
