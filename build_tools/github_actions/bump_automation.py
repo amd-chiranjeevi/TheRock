@@ -224,7 +224,7 @@ def create_therock_bump(submodule, token):
     with tempfile.TemporaryDirectory() as tmpdir:
         clone_dir = os.path.join(tmpdir, "TheRock")
         print(f"[INFO] Cloning TheRock into {clone_dir}")
-        clone_url = f"https://x-access-token:{token}@github.com/ROCm/TheRock.git"
+        clone_url = f"https://x-access-token:{token}@github.com/amd-chiranjeevi/TheRock.git"
         run(["git", "clone", "--depth", "1", clone_url, clone_dir])
 
         os.chdir(clone_dir)
