@@ -9,7 +9,7 @@ import os
 from datetime import datetime, timezone
 import requests
 
-THEROCK_REPO = "ROCm/TheRock"
+THEROCK_REPO = "amd-chiranjeevi/TheRock"
 
 ROCM_SYSTEMS_FILES = [
     ".github/workflows/therock-ci-linux.yml",
