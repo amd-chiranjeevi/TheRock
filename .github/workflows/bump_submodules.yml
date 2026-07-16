@@ -44,8 +44,8 @@ jobs:
         with:
           app-id: ${{ secrets.ROCM_SYSTEMS_APP_ID }}
           private-key: ${{ secrets.ROCM_SYSTEMS_APP_PRIVATE_KEY }}
-          owner: "ROCm"
-          repositories: "rocm-systems,TheRock"
+          owner: "amd-chiranjeevi"
+          repositories: "TheRock"
 
       - name: Generate GitHub App token rocm-libraries
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
@@ -53,8 +53,8 @@ jobs:
         with:
           app-id: ${{ secrets.ROCM_LIBRARIES_APP_ID }}
           private-key: ${{ secrets.ROCM_LIBRARIES_APP_PRIVATE_KEY }}
-          owner: "ROCm"
-          repositories: "rocm-libraries,TheRock"
+          owner: "amd-chiranjeevi"
+          repositories: "TheRock"
 
       - name: Install prerequisites
         run: |
