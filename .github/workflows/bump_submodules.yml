@@ -15,8 +15,6 @@ on:
           - all
           - rocm-systems
           - rocm-libraries
-          - rocgdb
-          - mesa-fork
   schedule:
     - cron: "0 */12 * * *" # Runs every 12 hrs at 12AM and 12PM
   push:
@@ -57,7 +55,7 @@ jobs:
           private-key: ${{ secrets.ROCM_SYSTEMS_APP_PRIVATE_KEY }}
           owner: "ROCm"
           # We will reuse the rocm-systems token for rocgdb and mesa-fork for now.
-          repositories: "rocm-systems,rocgdb,mesa-fork,TheRock"
+          repositories: "rocm-systems"
 
       - name: Generate GitHub App token rocm-libraries
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
