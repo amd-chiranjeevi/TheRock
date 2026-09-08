@@ -93,13 +93,13 @@ jobs:
             --rocgdb_token "${{ steps.systems-token.outputs.token }}" \
             --mesa_token "${{ steps.systems-token.outputs.token }}"
 
-      - name: Post bump breadcrumbs to upstream PRs
-        if: github.event_name == 'push'
-        continue-on-error: true
-        run: |
-          python3 build_tools/github_actions/post_bump_breadcrumbs.py \
-            --before "${{ github.event.before }}" \
-            --after "${{ github.sha }}" \
-            --systems_token "${{ steps.systems-token.outputs.token }}" \
-            --libraries_token "${{ steps.librarian-token.outputs.token }}" \
-            --rocgdb_token "${{ steps.systems-token.outputs.token }}"
+      # - name: Post bump breadcrumbs to upstream PRs
+      #   if: github.event_name == 'push'
+      #   continue-on-error: true
+      #   run: |
+      #     python3 build_tools/github_actions/post_bump_breadcrumbs.py \
+      #       --before "${{ github.event.before }}" \
+      #       --after "${{ github.sha }}" \
+      #       --systems_token "${{ steps.systems-token.outputs.token }}" \
+      #       --libraries_token "${{ steps.librarian-token.outputs.token }}" \
+      #       --rocgdb_token "${{ steps.systems-token.outputs.token }}"
