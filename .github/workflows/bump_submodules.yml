@@ -47,24 +47,24 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generate GitHub App token rocm-systems
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        id: systems-token
-        with:
-          app-id: ${{ secrets.ROCM_SYSTEMS_APP_ID }}
-          private-key: ${{ secrets.ROCM_SYSTEMS_APP_PRIVATE_KEY }}
-          owner: "ROCm"
-          # We will reuse the rocm-systems token for rocgdb and mesa-fork for now.
-          repositories: "rocm-systems"
+      # - name: Generate GitHub App token rocm-systems
+      #   uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      #   id: systems-token
+      #   with:
+      #     app-id: ${{ secrets.ROCM_SYSTEMS_APP_ID }}
+      #     private-key: ${{ secrets.ROCM_SYSTEMS_APP_PRIVATE_KEY }}
+      #     owner: "ROCm"
+      #     # We will reuse the rocm-systems token for rocgdb and mesa-fork for now.
+      #     repositories: "rocm-systems"
 
-      - name: Generate GitHub App token rocm-libraries
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        id: librarian-token
-        with:
-          app-id: ${{ secrets.ROCM_LIBRARIES_APP_ID }}
-          private-key: ${{ secrets.ROCM_LIBRARIES_APP_PRIVATE_KEY }}
-          owner: "ROCm"
-          repositories: "rocm-libraries,TheRock"
+      # - name: Generate GitHub App token rocm-libraries
+      #   uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+      #   id: librarian-token
+      #   with:
+      #     app-id: ${{ secrets.ROCM_LIBRARIES_APP_ID }}
+      #     private-key: ${{ secrets.ROCM_LIBRARIES_APP_PRIVATE_KEY }}
+      #     owner: "ROCm"
+      #     repositories: "rocm-libraries,TheRock"
 
       - name: Install prerequisites
         run: |
@@ -76,10 +76,8 @@ jobs:
           python3 build_tools/github_actions/bump_automation.py \
             --event_type "schedule" \
             --submodule "${{ github.event.inputs.submodule || 'all' }}" \
-            --systems_token "${{ steps.systems-token.outputs.token }}" \
-            --libraries_token "${{ steps.librarian-token.outputs.token }}" \
-            --rocgdb_token "${{ steps.systems-token.outputs.token }}" \
-            --mesa_token "${{ steps.systems-token.outputs.token }}"
+            --systems_token "${{ secrets.PAT }}" \
+            --libraries_token "${{ secrets.PAT }}"
 
       - name: Run push automation
         if: github.event_name == 'push'
@@ -88,10 +86,8 @@ jobs:
             --event_type "push" \
             --before "${{ github.event.before }}" \
             --after "${{ github.sha }}" \
-            --systems_token "${{ steps.systems-token.outputs.token }}" \
-            --libraries_token "${{ steps.librarian-token.outputs.token }}" \
-            --rocgdb_token "${{ steps.systems-token.outputs.token }}" \
-            --mesa_token "${{ steps.systems-token.outputs.token }}"
+            --systems_token "${{ secrets.PAT }}" \
+            --libraries_token "${{ secrets.PAT }}" \
 
       # - name: Post bump breadcrumbs to upstream PRs
       #   if: github.event_name == 'push'
