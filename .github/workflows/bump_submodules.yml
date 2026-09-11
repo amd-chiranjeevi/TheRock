@@ -77,7 +77,9 @@ jobs:
             --event_type "schedule" \
             --submodule "${{ github.event.inputs.submodule || 'all' }}" \
             --systems_token "${{ secrets.PAT }}" \
-            --libraries_token "${{ secrets.PAT }}"
+            --libraries_token "${{ secrets.PAT }}" \
+            --rocgdb_token  "${{ secrets.PAT }}" \
+            --mesa_token  "${{ secrets.PAT }}"
 
       - name: Run push automation
         if: github.event_name == 'push'
@@ -88,6 +90,8 @@ jobs:
             --after "${{ github.sha }}" \
             --systems_token "${{ secrets.PAT }}" \
             --libraries_token "${{ secrets.PAT }}" \
+            --rocgdb_token  "${{ secrets.PAT }}" \
+            --mesa_token  "${{ secrets.PAT }}"
 
       # - name: Post bump breadcrumbs to upstream PRs
       #   if: github.event_name == 'push'
