@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 import requests
 
-THEROCK_REPO = "amd-chiranjeevi/TheRock"
+THEROCK_REPO = "ROCm/TheRock"
 THEROCK_MAIN_BRANCH = "main"
 
 BOT_NAME = "therockbot"
@@ -150,6 +150,9 @@ def gh_api(
 
     if not response.ok:
         raise RuntimeError(f"GitHub API failed: {response.status_code} {response.text}")
+
+    if response.status_code == 204 or not response.text:
+        return None
 
     return response.json()
 
@@ -522,7 +525,7 @@ def close_stale_prs(submodule: str, old_sha: str, token: str) -> None:
                     method="DELETE",
                 )
                 print(f"[INFO] Deleted branch {branch_ref}")
-            except RuntimeError as e:
+            except Exception as e:
                 print(f"[WARN] Could not delete branch {branch_ref}: {e}")
 
 
