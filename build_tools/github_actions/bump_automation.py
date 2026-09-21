@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 import requests
 
-THEROCK_REPO = "ROCm/TheRock"
+THEROCK_REPO = "amd-chiranjeevi/TheRock"
 THEROCK_MAIN_BRANCH = "main"
 
 BOT_NAME = "therockbot"
